@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+    <style>
+        /* Reset some basic styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Background animation */
+        .background-circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .circle {
+            position: absolute;
+            bottom: -150px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: rise 20s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .circle:nth-child(1) {
+            left: 20%;
+            animation-duration: 15s;
+            animation-delay: 0s;
+        }
+
+        .circle:nth-child(2) {
+            left: 50%;
+            animation-duration: 25s;
+            animation-delay: 5s;
+        }
+
+        .circle:nth-child(3) {
+            left: 80%;
+            animation-duration: 20s;
+            animation-delay: 3s;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Container animation */
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            transform: scale(0.9) translateY(-50px);
+            animation: scaleIn 1s ease-in-out forwards, moveUp 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes scaleIn {
+            to {
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes moveUp {
+            0% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(10px);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            outline: none;
+            resize: none;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            margin-bottom: 20px;
+            animation: fadeInUp 1.4s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        button {
+            background-color: #ff416c;
+            background-image: linear-gradient(to right, #ff4b2b, #ff416c);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            outline: none;
+            animation: fadeInUp 1.6s ease-in-out;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        audio {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            textarea {
+                font-size: 1rem;
+            }
+
+            button {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="background-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <div class="container">
+        <h1>Text to Speech</h1>
+        <textarea id="text-input" placeholder="Enter text here"></textarea>
+        <br>
+        <button id="convert-btn">Convert to Speech</button>
+        <br>
+        <audio id="audio-player" controls></audio>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#convert-btn').click(function() {
+                var text = $('#text-input').val();
+
+                if (text.trim() !== "") {
+                    $.ajax({
+                        url: 'http://127.0.0.1:5000/text-to-speech',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ text: text }),
+                        success: function(response) {
+                            if (response.speech_url) {
+                                $('#audio-player').attr('src',"C:/Users/tanma/Desktop/new webapp" + response.speech_url ).trigger('play');
+                            } else if (response.error) {
+                                alert("Error: " + response.error);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("AJAX Error:", error);
+                            alert("An error occurred while processing the request.");
+                        }
+                    });
+                } else {
+                    alert("Please enter some text!");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

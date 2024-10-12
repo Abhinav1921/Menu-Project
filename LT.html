@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Linux Terminal</title>
+    <style>
+        body {
+            background: radial-gradient(circle, rgba(0,118,255,1) 0%, rgba(0,230,255,1) 100%);
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            animation: gradientAnimation 8s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background: radial-gradient(circle, rgba(0,118,255,1) 0%, rgba(0,230,255,1) 100%);
+            }
+            50% {
+                background: radial-gradient(circle, rgba(0,230,255,1) 0%, rgba(0,118,255,1) 100%);
+            }
+            100% {
+                background: radial-gradient(circle, rgba(0,118,255,1) 0%, rgba(0,230,255,1) 100%);
+            }
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            font-size: 3rem;
+            animation: textPulse 2s infinite;
+        }
+
+        @keyframes textPulse {
+            0% { text-shadow: 0 0 10px #fff, 0 0 20px #4a90e2, 0 0 30px #4a90e2; }
+            50% { text-shadow: 0 0 20px #fff, 0 0 30px #0072ff, 0 0 40px #0072ff; }
+            100% { text-shadow: 0 0 10px #fff, 0 0 20px #4a90e2, 0 0 30px #4a90e2; }
+        }
+
+        #terminal {
+            width: 90%;
+            max-width: 900px;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #1b1b1b;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #output {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #1d1f21;
+            border: 2px solid #00c6ff;
+            border-radius: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            color: #d3d7cf;
+            font-size: 1.1rem;
+        }
+
+        #command {
+            margin-top: 10px;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            border: 2px solid #0072ff;
+            outline: none;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #command:focus {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 114, 255, 0.7);
+        }
+
+        .command-line {
+            color: #00ff6c;
+        }
+
+        .error {
+            color: #ff1744;
+        }
+
+        @media (max-width: 768px) {
+            #terminal {
+                height: 60vh;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            #command {
+                font-size: 1rem;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #terminal {
+                height: 50vh;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            #command {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+
+        /* Floating bubbles animation */
+        .bubble {
+            position: absolute;
+            bottom: -150px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-600px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px);
+                opacity: 0.2;
+            }
+        }
+
+        .bubble:nth-child(1) {
+            left: 10%;
+            animation-duration: 8s;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(2) {
+            left: 25%;
+            animation-duration: 12s;
+            animation-delay: 3s;
+        }
+
+        .bubble:nth-child(3) {
+            left: 40%;
+            animation-duration: 10s;
+            animation-delay: 5s;
+        }
+
+        .bubble:nth-child(4) {
+            left: 55%;
+            animation-duration: 14s;
+            animation-delay: 7s;
+        }
+
+        .bubble:nth-child(5) {
+            left: 70%;
+            animation-duration: 9s;
+            animation-delay: 2s;
+        }
+
+        .bubble:nth-child(6) {
+            left: 85%;
+            animation-duration: 11s;
+            animation-delay: 1s;
+        }
+    </style>
+</head>
+<body>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <div>
+        <h1>Linux Terminal</h1>
+        <div id="terminal">
+            <div id="output"></div>
+            <input id="command" placeholder="Type command here..." autocomplete="off" />
+        </div>
+    </div>
+
+    <script>
+        const commandInput = document.getElementById('command');
+        const outputArea = document.getElementById('output');
+
+        commandInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                const command = commandInput.value;
+
+                // Send the command to the backend using AJAX
+                fetch('http://52.66.159.208:80/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: command })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the command output
+                    outputArea.innerHTML += `<p class="command-line">$ ${command}</p>`;
+                    outputArea.innerHTML += `<p>${data.output.replace(/\n/g, '<br>')}</p>`;
+                    outputArea.scrollTop = outputArea.scrollHeight;
+                    commandInput.value = '';
+                })
+                .catch(error => {
+                    outputArea.innerHTML += `<p class="error">Error: ${error}</p>`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

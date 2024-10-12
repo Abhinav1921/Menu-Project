@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Call with Twilio</title>
+    <style>
+        /* Base reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling with animated gradient background */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+            animation: gradientBackground 10s ease infinite alternate;
+            overflow: hidden;
+        }
+
+        /* Gradient background animation */
+        @keyframes gradientBackground {
+            0% {
+                background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+            }
+            100% {
+                background: linear-gradient(120deg, #66a6ff 0%, #89f7fe 100%);
+            }
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        /* Container animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Heading with glowing animation */
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            animation: glowText 1.5s ease-in-out infinite alternate;
+        }
+
+        /* Glow text animation */
+        @keyframes glowText {
+            0% {
+                text-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                text-shadow: 0 8px 20px rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        /* Input field styling */
+        input {
+            padding: 15px;
+            width: 80%;
+            margin-bottom: 20px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            outline: none;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Input field focus effect */
+        input:focus {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        /* Button styling */
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #ff6b6b;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Button hover and active effect */
+        button:hover {
+            background-color: #ff4d4d;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.8);
+        }
+
+        button:active {
+            background-color: #e84343;
+            transform: scale(1);
+        }
+
+        /* Status text styling */
+        #status {
+            margin-top: 20px;
+            color: #fff;
+            font-size: 1rem;
+            opacity: 0;
+            animation: fadeInStatus 1s ease forwards;
+        }
+
+        /* Status text animation */
+        @keyframes fadeInStatus {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Make a Call</h1>
+        <input type="text" id="phone_number" placeholder="Enter Phone Number">
+        <button onclick="makeCall()">Call Now</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function makeCall() {
+            const phone_number = document.getElementById('phone_number').value;
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.style.opacity = '0';  // Reset status message
+            statusDiv.innerHTML = '';  // Clear message
+
+            // AJAX request to Flask API
+            fetch('http://127.0.0.1:5000/make_call', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ to_phone: phone_number })
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusDiv.innerHTML = data.status === 'success' ?
+                    `Call initiated! Call SID: ${data.call_sid}` :
+                    `Failed to initiate call: ${data.message}`;
+                statusDiv.style.opacity = '1';
+            })
+            .catch(error => {
+                statusDiv.innerHTML = `Error: ${error}`;
+                statusDiv.style.opacity = '1';
+            });
+        }
+    </script>
+</body>
+</html>

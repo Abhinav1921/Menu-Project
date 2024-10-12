@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Access and Photo Capture</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #333;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        video {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInVideo 0.6s forwards;
+        }
+
+        @keyframes fadeInVideo {
+            100% { opacity: 1; }
+        }
+
+        canvas {
+            display: none;
+        }
+
+        button {
+            background-color: #ff416c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px rgba(255, 65, 108, 0.6);
+            background-color: #ff4f81;
+        }
+
+        img {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 15px;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInImage 0.8s forwards ease;
+        }
+
+        @keyframes fadeInImage {
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #download {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #download:hover {
+            background-color: #218838;
+        }
+
+        /* Bubble animation */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise 8s infinite ease-in-out;
+            opacity: 0.5;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .bubble:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            left: 10%;
+            animation-duration: 6s;
+            animation-delay: 2s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 50px;
+            height: 50px;
+            left: 30%;
+            animation-duration: 8s;
+            animation-delay: 1s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            left: 50%;
+            animation-duration: 10s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 30px;
+            height: 30px;
+            left: 70%;
+            animation-duration: 7s;
+            animation-delay: 3s;
+        }
+
+        .bubble:nth-child(5) {
+            width: 90px;
+            height: 90px;
+            left: 90%;
+            animation-duration: 12s;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Take a Photo</h1>
+        <video id="video" autoplay></video>
+        <button id="snap">Take Photo</button>
+        <canvas id="canvas"></canvas>
+        <img id="photo" alt="Your captured image will appear here...">
+        <a id="download" style="display:none;">Download Image</a>
+    </div>
+
+    <!-- Bubble elements -->
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const photo = document.getElementById('photo');
+        const snap = document.getElementById('snap');
+        const download = document.getElementById('download');
+        const context = canvas.getContext('2d');
+        let stream;
+
+        // Function to start the camera only when needed
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((mediaStream) => {
+                    stream = mediaStream;
+                    video.srcObject = stream;
+                    video.style.display = 'block'; // Show the video stream
+                })
+                .catch((err) => {
+                    console.error("Error accessing the camera: ", err);
+                });
+        }
+
+        // Capture photo on button click
+        snap.addEventListener('click', () => {
+            if (!stream) {
+                startCamera();  // Start the camera if not already started
+            } else {
+                // Draw the current video frame onto the canvas
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Convert the canvas image to data URL and set it as the image source
+                const dataURL = canvas.toDataURL('image/png');
+                photo.src = dataURL;
+                photo.style.display = 'block';
+
+                // Stop the camera after taking the photo
+                stream.getTracks().forEach(track => track.stop());
+                video.style.display = 'none'; // Hide the video stream
+
+                // Create a download link
+                download.href = dataURL;
+                download.download = 'captured_image.png';  // Set the file name
+                download.style.display = 'block';  // Show the download link
+
+                // Automatically trigger the download
+                download.click();
+            }
+        });
+    </script>
+</body>
+</html>

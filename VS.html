@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live IP Camera Stream</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #434343, #000000);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            animation: backgroundAnimation 10s infinite alternate;
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background: radial-gradient(circle at center, #434343, #000000);
+            }
+            100% {
+                background: radial-gradient(circle at center, #000000, #434343);
+            }
+        }
+
+        .container {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            animation: containerFadeIn 1.5s ease-out;
+        }
+
+        @keyframes containerFadeIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: black;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            animation: streamPulse 3s infinite alternate;
+        }
+
+        @keyframes streamPulse {
+            0% {
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.4);
+            }
+            100% {
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        h1 {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            animation: textGlow 2s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.2);
+            }
+            100% {
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        #toggleStream {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            font-size: 18px;
+            color: #ffffff;
+            background-color: #ff6f61;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        #toggleStream:hover {
+            background-color: #ff3e2d;
+            transform: scale(1.05);
+        }
+
+        #toggleStream:active {
+            background-color: #e63946;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live IP Camera Stream</h1>
+        <iframe id="cameraStream" src=""></iframe>
+        <button id="toggleStream">Stop Stream</button>
+    </div>
+
+    <script>
+        const cameraStream = document.getElementById('cameraStream');
+        const toggleStreamButton = document.getElementById('toggleStream');
+        let streamActive = true;
+
+        const ipWebcamURL = 'http://192.168.170.41:8080/video';  // Replace with your IP Webcam URL
+
+        // Load the stream
+        cameraStream.src = ipWebcamURL;
+
+        // Toggle the stream on/off
+        toggleStreamButton.addEventListener('click', () => {
+            if (streamActive) {
+                cameraStream.src = '';  // Stop the stream
+                toggleStreamButton.textContent = 'Start Stream';
+            } else {
+                cameraStream.src = ipWebcamURL;  // Start the stream again
+                toggleStreamButton.textContent = 'Stop Stream';
+            }
+            streamActive = !streamActive;
+        });
+    </script>
+</body>
+</html>

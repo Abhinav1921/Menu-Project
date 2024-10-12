@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine Scraper</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #3E35BC, #6757DE);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            background-color: rgba(38, 49, 58, 0.9);  /* Semi-transparent for background effect */
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: white;
+            color: #26313a;
+            animation: inputFocus 0.5s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            animation: buttonBounce 1s infinite alternate;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .results {
+            margin-top: 30px;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .result {
+            background-color: #343a40;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .result a {
+            text-decoration: none;
+            color: #007BFF;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+
+        /* Background Animation */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: move 15s linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Animations */
+        @keyframes move {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+            }
+            50% {
+                transform: translateY(100px) translateX(100px) scale(1.2);
+            }
+            100% {
+                transform: translateY(-100px) translateX(-100px) scale(0.8);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes inputFocus {
+            from {
+                box-shadow: 0 0 0 transparent;
+            }
+            to {
+                box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+            }
+        }
+
+        @keyframes buttonBounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        .loading-indicator {
+            font-size: 16px;
+            color: #ffffff;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Define multiple circles for the background animation */
+        .circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 20%;
+        }
+
+        .circle:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 60%;
+        }
+
+        .circle:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 80%;
+            left: 30%;
+        }
+
+        .circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 25%;
+            left: 70%;
+        }
+
+        .circle:nth-child(5) {
+            width: 180px;
+            height: 180px;
+            top: 70%;
+            left: 10%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <div class="container">
+        <h1>Menu Search Scraper</h1>
+        <form id="search-form">
+            <input type="text" id="query" placeholder="Enter your search query" required>
+            <button type="submit">Search</button>
+        </form>
+        <div id="loading" class="loading-indicator">Loading...</div>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#search-form').on('submit', function(e) {
+            e.preventDefault();  // Prevent form from refreshing the page
+            const query = $('#query').val();  // Get the value of the search input
+
+            $('#loading').show();  // Show loading indicator
+
+            $.ajax({
+                type: 'POST',  // You should use POST for sending data
+                url: 'http://127.0.0.1:5000/search',
+                contentType: 'application/json',  // Ensure the content type is JSON
+                data: JSON.stringify({ query: query }),  // Ensure query is sent as JSON
+                success: function(response) {
+                    $('#loading').hide();  // Hide loading indicator
+                    $('#results').empty().css('opacity', '1');  // Empty previous results and fade in
+                    response.forEach(function(result, index) {
+                        setTimeout(function() {
+                            $('#results').append(
+                                `<div class="result show">
+                                    <a href="${result.link}" target="_blank">${result.title}</a>
+                                    <p>${result.snippet}</p>
+                                </div>`
+                            );
+                        }, index * 150);  // Add delay between showing each result for animation effect
+                    });
+                },
+                error: function(error) {
+                    $('#loading').hide();  // Hide loading indicator
+                    $('#results').text('An error occurred. Please try again.').css('opacity', '1');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

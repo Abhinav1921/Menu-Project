@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Menu Project</title>
+    <style>
+        /* Global Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2980b9, #8e44ad);
+            color: #fff;
+            height: 100vh;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 50vh;
+            text-align: center;
+            padding-top: 30px;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            animation: fadeIn 2s ease;
+            color: #ecf0f1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        header p {
+            font-size: 1.5rem;
+            animation: fadeIn 2s ease;
+            margin-top: 0;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 12px 15px;
+            width: 80%;
+            max-width: 600px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .search-bar input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Container Section */
+        .container-section {
+            padding: 20px;
+        }
+
+        .container-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 20px;
+            justify-items: center;
+        }
+
+        .container-item {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .container-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .container-item img {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+
+        .container-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .container-item a {
+            display: block;
+            color: #3498db;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .container-item p {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Background Animation */
+        .animated-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            animation: move 15s infinite ease-in-out;
+        }
+
+        .circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            left: 10%;
+        }
+
+        .circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 40%;
+            right: 15%;
+        }
+
+        .circle:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            bottom: 10%;
+            left: 40%;
+        }
+
+        @keyframes move {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+
+            50% {
+                transform: scale(1.1) translate(30px, 30px);
+            }
+
+            100% {
+                transform: scale(1) translate(0, 0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="animated-background">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <header>
+        <h1>MY MENU PROJECT</h1>
+        <p>Explore my menu and find your favorite items!</p>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for tasks...">
+    </div>
+
+    <section id="containers" class="container-section">
+        <div class="container-grid" id="containerGrid">
+            <!-- Example of items -->
+            <div class="container-item" data-title="SEARCH">
+                <a href="webscraper.html"><img src="web search.jpg" alt="SEARCH"></a>
+                <a href="webscraper.html">SEARCH</a>
+            </div>
+            <div class="container-item" data-title="SEND EMAIL">
+                <a href="sendmail.html"><img src="send mail.jpg" alt="SEND EMAIL"></a>
+                <a href="sendmail.html">SEND EMAIL</a>
+            </div>
+            <div class="container-item" data-title="READ ALOUD">
+                <a href="TTS.html"><img src="text to speech.jpg" alt="READ ALOUD"></a>
+                <a href="TTS.html">TEXT TO SPEECH</a>
+            </div>
+            <div class="container-item" data-title="Volume Control">
+                <a href="volume.html"><img src="volume control.jpg" alt="ADJUST VOLUME"></a>
+                <a href="volume.html">ADJUST VOLUME</a>
+            </div>
+            <div class="container-item" data-title="GEOLOCATION">
+                <a href="geolocation.html"><img src="geolocation.jpg" alt="Geolocation"></a>
+                <a href="geolocation.html">GEOLOCATION</a>
+            </div>
+            <div class="container-item" data-title="SEND SMS">
+                <a href="SMS.html"><img src="SMS.jpg" alt="SMS"></a>
+                <a href="SMS.html">SEND SMS</a>
+            </div>
+            <div class="container-item" data-title="SPEECH TO TEXT">
+                <a href="STT.html"><img src="STT.jpg" alt="SPEECH TO TEXT"></a>
+                <a href="STT.html">SPEECH TO TEXT</a>
+            </div>
+            <div class="container-item" data-title="CAMERA">
+                <a href="camera.html"><img src="Camera.jpg" alt="Camera"></a>
+                <a href="camera.html">CAMERA</a>
+            </div>
+            <div class="container-item" data-title="LINUX TERMINAL">
+                <a href="LT.html"><img src="LT.jpg" alt="LINUX TERMINAL"></a>
+                <a href="LT.html">LINUX TERMINAL</a>
+            </div>
+            <div class="container-item" data-title="VIDEO STREAMING">
+                <a href="VS.html"><img src="Video steraming.jpg" alt="VIDEO STREAMING"></a>
+                <a href="VS.html">VIDEO STREAMING</a>
+            </div>
+            <div class="container-item" data-title="SEND WHATSAPP MESSAGE">
+                <a href="whatsapp.html"><img src="Whsatsaap .jpg" alt="SEND WHATSAPP MESSAGE"></a>
+                <a href="whatsapp.html">SEND WHATSAPP MESSAGE</a>
+            </div>
+            <div class="container-item" data-title="Send bulk Email">
+                <a href="bulkmail.html"><img src="bulk mail.jpg" alt="SEND BULK MAIL"></a>
+                <a href="bulkmail.html">SEND BULK MAIL</a>
+
+            </div>
+            <div class="container-item" data-title="CROP FACE">
+                <a href="crop.html"><img src="crop face.jpg" alt="SEND WHATSAPP MESSAGE"></a>
+                <a href="crop.html">CROP FACE</a>
+            </div>
+            <div class="container-item" data-title="GEMINI BOT">
+                <a href="geminibot.html"><img src="Gemini Bot.jpg" alt="SEND WHATSAPP MESSAGE"></a>
+                <a href="geminibot.html">GEMINI BOT</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function () {
+            let filter = this.value.toUpperCase();
+            let items = document.querySelectorAll('.container-item');
+
+            items.forEach(item => {
+                let title = item.getAttribute('data-title');
+                if (title.toUpperCase().includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

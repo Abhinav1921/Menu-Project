@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Bulk Email</title>
+    <style>
+        /* Reset some basic styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #07274c, #21445c);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Background animation */
+        .background-circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .circle {
+            position: absolute;
+            bottom: -150px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(251, 251, 251, 0.1);
+            border-radius: 50%;
+            animation: rise 20s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .circle:nth-child(1) {
+            left: 20%;
+            animation-duration: 15s;
+            animation-delay: 0s;
+        }
+
+        .circle:nth-child(2) {
+            left: 50%;
+            animation-duration: 25s;
+            animation-delay: 5s;
+        }
+
+        .circle:nth-child(3) {
+            left: 80%;
+            animation-duration: 20s;
+            animation-delay: 3s;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Container animation */
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            transform: scale(0.9) translateY(-50px);
+            animation: scaleIn 1s ease-in-out forwards, moveUp 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes scaleIn {
+            to {
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes moveUp {
+            0% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(10px);
+            }
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            letter-spacing: 1.5px;
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: 1rem;
+            animation: fadeInLeft 1.2s ease-in-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            animation: fadeInRight 1.4s ease-in-out;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #28a745;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            animation: fadeInUp 1.6s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button:active {
+            background-color: #1e7e34;
+        }
+
+        #responseMessage {
+            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            animation: fadeIn 1.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <div class="container">
+        <h2>Send Bulk Emails</h2>
+        <form id="emailForm">
+            <label for="sender_email">Sender's Email:</label>
+            <input type="email" id="sender_email" name="sender_email" placeholder="Your email" required>
+
+            <label for="password">Password: (App Password)</label>
+            <input type="password" id="password" name="password" placeholder="Your password" required>
+
+            <label for="receiver_emails">Receiver Emails (Comma Separated):</label>
+            <input type="text" id="receiver_emails" name="receiver_emails" placeholder="Separate multiple emails with commas" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" placeholder="Write your message here" required></textarea>
+
+            <button type="button" onclick="sendBulkEmail()">Send Bulk Emails</button>
+        </form>
+
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        function sendBulkEmail() {
+            const senderEmail = document.getElementById('sender_email').value;
+            const password = document.getElementById('password').value;
+            const receiverEmails = document.getElementById('receiver_emails').value.split(',').map(email => email.trim());
+            const message = document.getElementById('message').value;
+
+            const data = {
+                sender_email: senderEmail,
+                password: password,
+                receiver_emails: receiverEmails,
+                message: message
+            };
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:5000/send_bulk_email', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('responseMessage').innerText = xhr.responseText;
+                    document.getElementById('responseMessage').style.color = 'lightgreen';
+                } else if (xhr.readyState === 4) {
+                    document.getElementById('responseMessage').innerText = xhr.responseText;
+                    document.getElementById('responseMessage').style.color = 'red';
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>

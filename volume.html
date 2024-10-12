@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volume Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Ensure bubbles don't create a scrollbar */
+            position: relative;
+            animation: backgroundAnimation 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
+            50% { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+            100% { background: linear-gradient(135deg, #ff512f, #dd2476); }
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            bottom: -150px;
+            animation: float 10s infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        .bubble:nth-child(1) {
+            width: 40px;
+            height: 40px;
+            left: 10%;
+            animation-duration: 8s;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            left: 30%;
+            animation-duration: 12s;
+            animation-delay: 2s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            left: 50%;
+            animation-duration: 10s;
+            animation-delay: 4s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 50px;
+            height: 50px;
+            left: 70%;
+            animation-duration: 14s;
+            animation-delay: 6s;
+        }
+
+        .bubble:nth-child(5) {
+            width: 100px;
+            height: 100px;
+            left: 90%;
+            animation-duration: 18s;
+            animation-delay: 8s;
+        }
+
+        .container {
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: containerFadeIn 2s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes containerFadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            animation: textGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px #ffffff, 0 0 20px #ff512f, 0 0 30px #ff512f; }
+            100% { text-shadow: 0 0 20px #ffffff, 0 0 30px #dd2476, 0 0 40px #ff512f; }
+        }
+
+        input[type=range] {
+            width: 100%;
+            margin: 1rem 0;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #ffffff;
+            border-radius: 5px;
+            height: 5px;
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #feb47b;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            background: #ff7e5f;
+        }
+
+        p {
+            color: #fff;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        span {
+            font-weight: bold;
+            color: #ff512f;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { color: #ff512f; }
+            50% { color: #feb47b; }
+            100% { color: #ff512f; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Bubbles for background animation -->
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
+<div class="container">
+    <h1>Control Laptop Volume</h1>
+    <input type="range" id="volumeSlider" min="0" max="100" value="50">
+    <p>Current Volume: <span id="currentVolume">50</span>%</p>
+</div>
+
+<script>
+    const volumeSlider = document.getElementById('volumeSlider');
+    const currentVolume = document.getElementById('currentVolume');
+
+    // Fetch the current volume on page load
+    fetch('http://127.0.0.1:5000/get_volume')
+        .then(response => response.json())
+        .then(data => {
+            volumeSlider.value = data.volume;
+            currentVolume.textContent = data.volume;
+        });
+
+    volumeSlider.addEventListener('input', () => {
+        const volume = volumeSlider.value;
+        currentVolume.textContent = volume;
+
+        // Send the volume to the backend using AJAX
+        fetch('http://127.0.0.1:5000/set_volume', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ volume: volume })
+        });
+    });
+</script>
+
+</body>
+</html>
